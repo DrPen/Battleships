@@ -3,6 +3,7 @@ package battleships;
 public class boat {
 	private int len;
 	private int HP;
+	private int type;
 	
 	public int getLen(){
 		return this.len;
@@ -12,8 +13,13 @@ public class boat {
 		return this.HP;	
 	}
 	
-	public boat(int len) {
-		this.len = len;
-		this.HP = len;
+	public int getType() {
+		return this.type;
+	}
+	
+	public boat(int x) {
+		this.len = x;
+		this.HP = x;
+		this.type = x;
 	}
 }
