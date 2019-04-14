@@ -17,9 +17,9 @@ public class boat {
 		return this.type;
 	}
 	
-	public boat(int x) {
+	public boat(int x, int type) {
 		this.len = x;
 		this.HP = x;
-		this.type = x;
+		this.type = type;
 	}
 }
