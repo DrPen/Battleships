@@ -1,21 +1,20 @@
 package battleships;
 
 import java.util.Vector;
+import java.util.Random;
 import java.util.Scanner;
 
-
-
-public class player {	
+public class player {
 	private int field[][];
 	private Vector<boat> boats = new Vector<boat>();
-	private int boatType = 2;
+	private String playerName;
 
 	private boolean placeShipLogic(String x, String y, boat b) throws Exception {
 		if (x.length() < 2 || x.length() > 3 || y.length() < 2 || y.length() > 3) {
 			throw new Exception("Invalid Coordinates");
 		}
 
-		// x1 -= 97;
+		// x1 -= 97 because a=97;
 		int x1, y1, x2, y2;
 
 		try {
@@ -93,8 +92,66 @@ public class player {
 			return true;
 
 		} catch (Exception e) {
-			// throw new Exception("Error placing ship");
 			throw e;
+		}
+	}
+
+	private void lol() {
+		while (true)
+			System.out.println("CYKA");
+	}
+
+	// terribly inefficient >_>
+	private boolean autoPlaceShip(boat boat, Random rand) {
+		int x1Tmp, x2Tmp, y1Tmp, y2Tmp;
+		while (true) {
+			// 0 horizontal 1 vertical
+			if (rand.nextInt(2) == 0) {
+				y1Tmp = rand.nextInt((106 - 97) + 1) + 97;
+				x1Tmp = rand.nextInt(10) + 1;
+
+				// boat placement direction
+				if (rand.nextInt(2) == 0)
+					x2Tmp = x1Tmp + boat.getLen() - 1;
+				else
+					x2Tmp = x1Tmp - boat.getLen() - 1;
+
+				String y = String.valueOf((char) y1Tmp);
+				String x1 = Integer.toString(x1Tmp);
+				String p1 = y + x1;
+
+				String x2 = Integer.toString(x2Tmp);
+				String p2 = y + x2;
+
+				try {
+					if (placeShipLogic(p1, p2, boat))
+						return true;
+				} catch (Exception e) {
+				}
+
+			} else {
+				y1Tmp = rand.nextInt((106 - 97) + 1) + 97;
+				x1Tmp = rand.nextInt(10) + 1;
+
+				// boat placement direction
+				if (rand.nextInt(2) == 0)
+					y2Tmp = y1Tmp + boat.getLen() - 1;
+				else
+					y2Tmp = y1Tmp - boat.getLen() - 1;
+
+				String y1 = String.valueOf((char) y1Tmp);
+				String x = Integer.toString(x1Tmp);
+				String p1 = y1 + x;
+
+				String y2 = String.valueOf((char) y2Tmp);
+				String p2 = y2 + x;
+
+				try {
+					if (placeShipLogic(p1, p2, boat))
+						return true;
+				} catch (Exception e) {
+				}
+			}
 		}
 	}
 
@@ -118,7 +175,22 @@ public class player {
 		}
 	}
 
-	public player() {
+	public String getName() {
+		return this.playerName;
+	}
+
+	private void drawNumField() {
+		for(int[] y: field) {
+			System.out.println();
+			for(int x:y ) {
+				System.out.print(x + " ");
+			}
+		}
+	}
+	
+	// human player
+	public player(String playerName) {
+		this.playerName = playerName;
 		this.field = new int[10][10];
 
 		// initialize field with 0
@@ -130,16 +202,44 @@ public class player {
 
 		System.out.println("Enter Coordinates to place your ships!");
 		Scanner scan = new Scanner(System.in);
-		
-		boats.add(new boat(2,2));
-		boats.add(new boat(3,3));
-		boats.add(new boat(3,4));
-		boats.add(new boat(4,5));
-		boats.add(new boat(5,6));
-		
+
+		boats.add(new boat(2, 2));
+		boats.add(new boat(3, 3));
+		boats.add(new boat(3, 4));
+		boats.add(new boat(4, 5));
+		boats.add(new boat(5, 6));
+
 		for (int x = 0; x < boats.size(); x++) {
 			placeShip(boats.get(x), scan);
-			System.out.println("imadick " + x);
 		}
+	}
+
+	// PC
+	public player() {
+		this.playerName = "PC";
+		this.field = new int[10][10];
+
+		// initialize field with 0
+		for (int[] y : field) {
+			for (int x : y) {
+				x = 0;
+			}
+		}
+
+		Random rand = new Random();
+
+		boats.add(new boat(2, 2));
+		boats.add(new boat(3, 3));
+		boats.add(new boat(3, 4));
+		boats.add(new boat(4, 5));
+		boats.add(new boat(5, 6));
+
+		for (int x = 0; x < boats.size(); x++) {
+			autoPlaceShip(boats.get(x), rand);
+		}
+
+		System.out.println("The Computer has placed its ships!");
+		
+		drawNumField();
 	}
 }
